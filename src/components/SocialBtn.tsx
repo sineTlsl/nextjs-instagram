@@ -12,16 +12,16 @@ type Props = {
 const socials = [
   {
     name: 'Google',
-    bgColor: '#FFFFFF',
-    hoverBgColor: '#FFFFFF',
-    color: '#000000/0,0,0(54%)',
+    bgColor: 'bg-white',
+    hoverBgColor: 'hover:bg-white',
+    color: 'text-black',
     icon: <GoogleIcon />,
   },
   {
     name: 'GitHub',
-    bgColor: '#272E33',
-    hoverBgColor: '#272E33',
-    color: '#FFFFFF',
+    bgColor: 'bg-[#272E33]',
+    hoverBgColor: 'bg-[#272E33]',
+    color: 'text-white',
     icon: <GitHubIcon />,
   },
 ];
@@ -32,7 +32,7 @@ export default function SocialBtn({ name, onClick }: Props) {
 
   return (
     <button
-      className={`flex items-center justify-center bg-[${bgColor}] :hover-bg${hoverBgColor} text-[${color}] px-2 py-2 rounded-md border`}
+      className={`w-full flex items-center justify-center ${bgColor} hover:${hoverBgColor} ${color} p-2 rounded-md border`}
       onClick={onClick}
     >
       <div className='mr-2'>{icon}</div>
