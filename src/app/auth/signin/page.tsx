@@ -24,7 +24,7 @@ export default async function SignInPage({
   return (
     <section className='w-full'>
       <div className='w-full mt-[30%] mx-auto flex flex-col items-center justify-center gap-2 w-full-mobile sm:max-w-sm px-2'>
-        <SignIn providers={providers} />
+        <SignIn providers={providers} callbackUrl={callbackUrl ?? '/'} />
       </div>
     </section>
   );
