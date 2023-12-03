@@ -2,7 +2,6 @@
 
 import { ClientSafeProvider, signIn } from 'next-auth/react';
 import SocialBtn from './SocialBtn';
-import ColorBtn from './ui/ColorBtn';
 
 type Props = {
   providers: Record<string, ClientSafeProvider>;
