@@ -1,6 +1,6 @@
 import { client } from './sanity';
 
-type OAuthUser = {
+export type OAuthUser = {
   id: string;
   email: string;
   name: string;

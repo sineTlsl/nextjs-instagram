@@ -40,7 +40,7 @@ export default function NavBar() {
   return (
     <div className='h-14 flex justify-between items-center px-4'>
       <Link href='/'>
-        <h1 className='text-2xl font-semibold'>Sinegram</h1>
+        <h1 className='text-2xl font-semibold'>SINEGRAM</h1>
       </Link>
       <nav>
         <ul className='flex gap-2.5 items-center'>
@@ -54,7 +54,7 @@ export default function NavBar() {
           {user && (
             <li>
               <Link href={`/user/${user.name}`}>
-                <Avatar image={user.image} />
+                <Avatar image={user.image} size='small' hightlight={true} />
               </Link>
             </li>
           )}
