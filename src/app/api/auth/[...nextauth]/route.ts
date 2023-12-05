@@ -19,7 +19,6 @@ export const authOptions: NextAuthOptions = {
       if (!email) {
         return false;
       }
-      console.log(id, email, name, image);
 
       addUser({
         id,

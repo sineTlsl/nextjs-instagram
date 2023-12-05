@@ -1,5 +1,3 @@
-'use client';
-
 import { User } from '@/model/user';
 import Avatar from './Avatar';
 

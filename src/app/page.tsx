@@ -7,7 +7,7 @@ import FollowingBar from '@/components/FollwingBar';
 import PostList from '@/components/PostList';
 import SideBar from '@/components/SideBar';
 
-export default async function Home() {
+export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const user = session?.user;
 
