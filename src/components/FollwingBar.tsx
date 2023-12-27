@@ -9,7 +9,6 @@ import ScrollableBar from './ui/ScrollableBar';
 
 export default function FollowingBar() {
   const { data, isLoading, error } = useSWR<DetailUser>('/api/me');
-  console.log(data?.following);
   // const users = data?.following;
   // const users = undefined;
   const users = data?.following && [
