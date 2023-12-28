@@ -1,3 +1,9 @@
+import UserSearch from '@/components/UserSearch';
+
 export default function SearchPage() {
-  return <h1>검색 페이지</h1>;
+  return (
+    <section className='w-full'>
+      <UserSearch />
+    </section>
+  );
 }
