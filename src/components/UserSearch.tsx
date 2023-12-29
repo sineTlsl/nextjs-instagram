@@ -1,6 +1,6 @@
 'use client';
 
-import { ProfileUser } from '@/model/user';
+import { SearchUser } from '@/model/user';
 import { FormEvent, useState } from 'react';
 import useSWR from 'swr';
 import GridSpinner from './GridSpinner';
@@ -18,7 +18,7 @@ export default function UserSearch() {
     data: users,
     isLoading,
     error,
-  } = useSWR<ProfileUser[]>(`/api/search/${debouncedKeyword}`);
+  } = useSWR<SearchUser[]>(`/api/search/${debouncedKeyword}`);
 
   // 사용자가 키워드를 입력할 때마다 useSWR이 업데이트 된 키워드로 요청을 하고,
   // data 값이 업데이트 된다.
