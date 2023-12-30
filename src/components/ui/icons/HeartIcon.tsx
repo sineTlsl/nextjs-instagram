@@ -1,5 +1,9 @@
 import { IoHeartOutline } from 'react-icons/io5';
 
-export default function HeartIcon() {
-  return <IoHeartOutline className='w-7 h-7' />;
+type Props = {  
+  className?: string;
+}
+
+export default function HeartIcon({className}: Props) {
+  return <IoHeartOutline className={className || 'w-7 h-7'} />;
 }
