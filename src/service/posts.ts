@@ -1,5 +1,5 @@
-import { SimplePost } from '@/model/posts';
-import { client, urlFor } from './sanity';
+import { SimplePost } from "@/model/posts";
+import { client, urlFor } from "./sanity";
 
 const simplePostProjection = `
     ...,
@@ -20,7 +20,7 @@ export async function getFollowingPostsOf(username: string) {
           || author._ref in *[_type == "user" && username == "${username}"].following[]._ref]
           | order(_createdAt desc){
           ${simplePostProjection}
-        }`
+        }`,
     )
     .then(mapPosts);
 }
@@ -39,9 +39,9 @@ export async function getPost(id: string) {
       },
       "id": _id,
       "createdAt": _createdAt
-    }`
+    }`,
     )
-    .then((post) => ({ ...post, image: urlFor(post.image) }));
+    .then(post => ({ ...post, image: urlFor(post.image) }));
 }
 
 /** 사용자가 포스팅한 API */
@@ -51,7 +51,7 @@ export async function getPostsOf(username: string) {
       `*[_type == "post" && author->username == "${username}"]
       | order(_createdAt desc) {
         ${simplePostProjection}
-      }`
+      }`,
     )
     .then(mapPosts);
 }
@@ -63,7 +63,7 @@ export async function getLikedPostsOf(username: string) {
       `*[_type == "post" && "${username}" in likes[]->username]
       | order(_createdAt desc) {
         ${simplePostProjection}
-      }`
+      }`,
     )
     .then(mapPosts);
 }
@@ -75,7 +75,7 @@ export async function getSavedPostsOf(username: string) {
       `*[_type == "post" && _id in *[_type == "user" && "useranme" == "${username}"].bookmarks[].ref]
       | order(_createdAt desc) {
         ${simplePostProjection}
-      }`
+      }`,
     )
     .then(mapPosts);
 }
@@ -83,6 +83,29 @@ export async function getSavedPostsOf(username: string) {
 function mapPosts(posts: SimplePost[]) {
   return posts.map((post: SimplePost) => ({
     ...post,
+    likes: post.likes ?? [],
     image: urlFor(post.image),
   }));
+}
+
+/** 포스트 좋아요 */
+export async function likePost(postId: string, userId: string) {
+  return client
+    .patch(postId)
+    .setIfMissing({ likes: [] })
+    .append("likes", [
+      {
+        _ref: userId,
+        _type: "reference",
+      },
+    ])
+    .commit({ autoGenerateArrayKeys: true });
+}
+
+/** 포스트 좋아요 취소 */
+export async function disLikePost(postId: string, userId: string) {
+  return client
+    .patch(postId)
+    .unset([`likes[_ref == "${userId}"]`])
+    .commit();
 }
