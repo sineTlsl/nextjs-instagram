@@ -1,0 +1,5 @@
+{
+  // 프로젝트 .vscode/setting.json 파일에 다음 설정을 추가하면 팀 프로젝트시 팀원들과 동일하게 적용
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
