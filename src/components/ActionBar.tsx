@@ -9,7 +9,7 @@ import BookmarkIcon from "./ui/icons/BookmarkIcon";
 import HeartIcon from "./ui/icons/HeartIcon";
 import HeartFillIcon from "./ui/icons/HeartFillIcon";
 import BookmarkFillIcon from "./ui/icons/BookmarkFillIcon";
-import { useSWRConfig } from "swr";
+import usePosts from "@/hooks/usePosts";
 
 type Props = {
   post: SimplePost;
@@ -19,25 +19,20 @@ export default function ActionBar({ post }: Props) {
   const { id, likes, username, text, createdAt } = post;
   const { data: session } = useSession();
   const user = session?.user;
-  const hasHeart = user ? likes.includes(user.username) : false;
+  const hasLike = user ? likes.includes(user.username) : false;
   const [hasBookmarked, setHasBookmarked] = useState<boolean>(false);
-  const { mutate } = useSWRConfig();
-  // const { trigger } = useSWRMutation(`/api/posts/${id}`);
+  const { setLike } = usePosts();
 
   const handleLike = (like: boolean) => {
-    fetch(`api/likes`, {
-      method: "PUT",
-      body: JSON.stringify({
-        id,
-        like,
-      }),
-    }).then(() => mutate("/api/posts"));
+    if (user) {
+      setLike(post, user.username, like);
+    }
   };
   return (
     <>
       <div className="flex justify-between py-2 px-4">
         <ToggleButton
-          toggled={hasHeart}
+          toggled={hasLike}
           onToggle={handleLike}
           onIcon={<HeartFillIcon />}
           offIcon={<HeartIcon />}
