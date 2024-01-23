@@ -1,7 +1,7 @@
 export type Comment = {
   comment: string;
   username: string;
-  image: string;
+  image?: string;
 };
 
 // FullPost에서 comments을 숫자 타입으로 대체
