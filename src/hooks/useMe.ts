@@ -1,4 +1,5 @@
 import { HomeUser } from '@/model/user';
+import { useCallback } from 'react';
 import useSWR from 'swr';
 
 async function updateBookmark(postId: string, bookmark: boolean) {
@@ -8,13 +9,20 @@ async function updateBookmark(postId: string, bookmark: boolean) {
   }).then(res => res.json());
 }
 
+async function updateFollow(targetId: string, follow: boolean) {
+  return fetch('/api/follow', {
+    method: 'PUT',
+    body: JSON.stringify({ id: targetId, follow }),
+  }).then(res => res.json());
+}
+
 export default function useMe() {
   const { data: user, isLoading, error, mutate } = useSWR<HomeUser>('/api/me');
 
   const setBookmark = useCallback(
     (postId: string, bookmark: boolean) => {
       if (!user) return;
-      const bookmarks = user?.bookmarks ?? [];
+      const bookmarks = user.bookmarks;
       const newUser = {
         ...user,
         bookmarks: bookmark
@@ -23,14 +31,20 @@ export default function useMe() {
       };
 
       return mutate(updateBookmark(postId, bookmark), {
-        optimisticData: newUser, // 즉각적으로 UI를 업데이트 되도록
+        optimisticData: newUser,
         populateCache: false,
         revalidate: false,
-        rollbackOnError: true, // 네트워크상 문제가 생겨 백엔드에 업데이트가 안되었다면 에러 true
+        rollbackOnError: true,
       });
     },
     [user, mutate],
   );
 
-  return { user, isLoading, error, setBookmark };
+  const toggleFollow = useCallback(
+    (targetId: string, follow: boolean) => {
+      return mutate(updateFollow(targetId, follow), { populateCache: false });
+    },
+    [mutate],
+  );
+  return { user, isLoading, error, setBookmark, toggleFollow };
 }

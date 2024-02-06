@@ -1,5 +1,5 @@
-import { SearchUser } from "@/model/user";
-import { client } from "./sanity";
+import { SearchUser } from '@/model/user';
+import { client } from './sanity';
 
 export type OAuthUser = {
   id: string;
@@ -12,7 +12,7 @@ export type OAuthUser = {
 export async function addUser({ id, email, name, username, image }: OAuthUser) {
   return client.createIfNotExists({
     _id: id,
-    _type: "user",
+    _type: 'user',
     username,
     email,
     name,
@@ -38,7 +38,7 @@ export async function getUserByUsername(username: string) {
 export async function searchUsers(keyword?: string) {
   const query = keyword
     ? `&& (name match "${keyword}") || (username match "${keyword}")`
-    : "";
+    : '';
 
   return client
     .fetch(
@@ -81,10 +81,10 @@ export async function addBookmark(userId: string, postId: string) {
   return client
     .patch(userId)
     .setIfMissing({ bookmarks: [] })
-    .append("bookmarks", [
+    .append('bookmarks', [
       {
         _ref: postId,
-        _type: "reference",
+        _type: 'reference',
       },
     ])
     .commit({ autoGenerateArrayKeys: true });
@@ -96,4 +96,30 @@ export async function removeBookmark(userId: string, postId: string) {
     .patch(userId)
     .unset([`bookmarks[_ref == "${postId}"]`])
     .commit();
+}
+
+/** 팔로우 */
+export async function follow(myId: string, targetId: string) {
+  return client
+    .transaction() //
+    .patch(myId, user =>
+      user
+        .setIfMissing({ following: [] })
+        .append('following', [{ _ref: targetId, _type: 'reference' }]),
+    )
+    .patch(targetId, user =>
+      user
+        .setIfMissing({ followers: [] })
+        .append('followers', [{ _ref: myId, _type: 'reference' }]),
+    )
+    .commit({ autoGenerateArrayKeys: true });
+}
+
+/** 언팔로우 */
+export async function unfollow(myId: string, targetId: string) {
+  return client
+    .transaction() //
+    .patch(myId, user => user.unset([`following[_ref=="${targetId}"]`]))
+    .patch(targetId, user => user.unset([`followers[_ref=="${myId}"]`]))
+    .commit({ autoGenerateArrayKeys: true });
 }
