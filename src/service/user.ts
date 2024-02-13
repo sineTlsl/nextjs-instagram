@@ -1,7 +1,7 @@
 import { SearchUser } from '@/model/user';
 import { client } from './sanity';
 
-export type OAuthUser = {
+type OAuthUser = {
   id: string;
   email: string;
   name: string;
@@ -9,7 +9,7 @@ export type OAuthUser = {
   image?: string | null;
 };
 
-export async function addUser({ id, email, name, username, image }: OAuthUser) {
+export async function addUser({ id, username, email, name, image }: OAuthUser) {
   return client.createIfNotExists({
     _id: id,
     _type: 'user',
@@ -25,12 +25,12 @@ export async function addUser({ id, email, name, username, image }: OAuthUser) {
 
 export async function getUserByUsername(username: string) {
   return client.fetch(
-    `*[_type == "user" && username == "${username}"][0] {
+    `*[_type == "user" && username == "${username}"][0]{
       ...,
-      "id": _id,
-      following[] -> {username, image},
-      followers[] -> {username, image},
-      "bookmarks": bookmarks[] -> _id
+      "id":_id,
+      following[]->{username,image},
+      followers[]->{username,image},
+      "bookmarks":bookmarks[]->_id
     }`,
   );
 }
@@ -39,14 +39,14 @@ export async function searchUsers(keyword?: string) {
   const query = keyword
     ? `&& (name match "${keyword}") || (username match "${keyword}")`
     : '';
-
   return client
     .fetch(
-      `*[_type == "user" ${query}] {
-    ...,
-    "following": count(following),
-    "followers": count(followers),
-  }`,
+      `*[_type =="user" ${query}]{
+      ...,
+      "following": count(following),
+      "followers": count(followers),
+    }
+    `,
     )
     .then(users =>
       users.map((user: SearchUser) => ({
@@ -60,13 +60,14 @@ export async function searchUsers(keyword?: string) {
 export async function getUserForProfile(username: string) {
   return client
     .fetch(
-      `*[_type == "user" && username == "${username}"][0] {
+      `*[_type == "user" && username == "${username}"][0]{
       ...,
-      "id": _id,
+      "id":_id,
       "following": count(following),
       "followers": count(followers),
-      "posts": count(*[_type == "post" && author->username == "${username}"])
-    }`,
+      "posts": count(*[_type=="post" && author->username == "${username}"])
+    }
+    `,
     )
     .then(user => ({
       ...user,
@@ -76,10 +77,9 @@ export async function getUserForProfile(username: string) {
     }));
 }
 
-/** 포스트 북마크 추가 */
 export async function addBookmark(userId: string, postId: string) {
   return client
-    .patch(userId)
+    .patch(userId) //
     .setIfMissing({ bookmarks: [] })
     .append('bookmarks', [
       {
@@ -90,15 +90,13 @@ export async function addBookmark(userId: string, postId: string) {
     .commit({ autoGenerateArrayKeys: true });
 }
 
-/** 포스트 북마크 취소 */
 export async function removeBookmark(userId: string, postId: string) {
   return client
     .patch(userId)
-    .unset([`bookmarks[_ref == "${postId}"]`])
+    .unset([`bookmarks[_ref=="${postId}"]`])
     .commit();
 }
 
-/** 팔로우 */
 export async function follow(myId: string, targetId: string) {
   return client
     .transaction() //
@@ -115,7 +113,6 @@ export async function follow(myId: string, targetId: string) {
     .commit({ autoGenerateArrayKeys: true });
 }
 
-/** 언팔로우 */
 export async function unfollow(myId: string, targetId: string) {
   return client
     .transaction() //

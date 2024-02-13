@@ -13,9 +13,6 @@ export async function PUT(req: NextRequest) {
 
   const { id: targetId, follow: isFollow } = await req.json();
 
-  console.log('targetId >> ', targetId);
-  console.log('follow >> ', isFollow);
-
   if (!targetId || isFollow === undefined) {
     return new Response('Bad Request', { status: 400 });
   }

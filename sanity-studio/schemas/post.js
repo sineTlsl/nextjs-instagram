@@ -61,7 +61,6 @@ export default {
     },
     prepare(selection) {
       const {title, authorName, authorUsername, media} = selection
-
       return {
         title,
         subtitle: `by ${authorName} (${authorUsername})`,

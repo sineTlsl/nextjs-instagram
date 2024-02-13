@@ -1,22 +1,18 @@
-import {defineConfig, isDev} from 'sanity'
+import {defineConfig} from 'sanity'
+import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
-import {deskTool} from 'sanity/desk'
 import {schemaTypes} from './schemas'
-import {getStartedPlugin} from './plugins/sanity-plugin-tutorial'
-
-const devOnlyPlugins = [getStartedPlugin()]
 
 export default defineConfig({
   name: 'default',
   title: 'nextjs-instagram',
 
-  projectId: '93psdqm7',
+  projectId: 'w9sodyjz',
   dataset: 'production',
 
-  plugins: [deskTool(), visionTool(), ...(isDev ? devOnlyPlugins : [])],
+  plugins: [structureTool(), visionTool()],
 
   schema: {
     types: schemaTypes,
   },
 })
-
