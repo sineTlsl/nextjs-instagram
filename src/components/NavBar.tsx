@@ -1,34 +1,37 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useSession, signIn, signOut } from "next-auth/react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 // components
-import HomeIcon from "./ui/icons/HomeIcon";
-import HomeFillIcon from "./ui/icons/HomeFillIcon";
-import SearchIcon from "./ui/icons/SearchIcon";
-import SearchFillIcon from "./ui/icons/SearchFillIcon";
-import NewIcon from "./ui/icons/NewIcon";
-import NewFillIcon from "./ui/icons/NewFillIcon";
-import ColorBtn from "./ui/ColorBtn";
-import Avatar from "./Avatar";
+import HomeIcon from './ui/icons/HomeIcon';
+import HomeFillIcon from './ui/icons/HomeFillIcon';
+import SearchIcon from './ui/icons/SearchIcon';
+import SearchFillIcon from './ui/icons/SearchFillIcon';
+import NewIcon from './ui/icons/NewIcon';
+import NewFillIcon from './ui/icons/NewFillIcon';
+import ColorBtn from './ui/ColorBtn';
+import Avatar from './Avatar';
 
 const menu = [
   {
-    href: "/",
+    href: '/',
     icon: <HomeIcon />,
     clickedIcon: <HomeFillIcon />,
+    title: 'Home',
   },
   {
-    href: "/search",
+    href: '/search',
     icon: <SearchIcon />,
     clickedIcon: <SearchFillIcon />,
+    title: 'Search users',
   },
   {
-    href: "/new",
+    href: '/new',
     icon: <NewIcon />,
     clickedIcon: <NewFillIcon />,
+    title: 'New post',
   },
 ];
 
@@ -39,15 +42,15 @@ export default function NavBar() {
 
   return (
     <div className="h-14 flex justify-between items-center px-4">
-      <Link href="/">
+      <Link href="/" aria-label="Home">
         <h1 className="text-2xl font-semibold">SINEGRAM</h1>
       </Link>
       <nav>
         <ul className="flex gap-2.5 items-center">
-          {menu.map(item => (
-            <li key={item.href}>
-              <Link href={item.href}>
-                {pathName === item.href ? item.clickedIcon : item.icon}
+          {menu.map(({ href, icon, clickedIcon, title }) => (
+            <li key={href}>
+              <Link href={href} aria-label={title}>
+                {pathName === href ? clickedIcon : icon}
               </Link>
             </li>
           ))}
